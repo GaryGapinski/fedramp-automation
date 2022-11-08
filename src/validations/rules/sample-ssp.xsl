@@ -149,10 +149,10 @@
         <xsl:comment>This document used {static-base-uri()} as the transform.</xsl:comment>
         <xsl:copy-of
             select="$LF" />
-        <xsl:processing-instruction name="xml-model"> schematypens="http://www.w3.org/2001/XMLSchema" title="OSCAL complete schema" href="https://raw.githubusercontent.com/usnistgov/OSCAL/v1.0.2/xml/schema/oscal_complete_schema.xsd" </xsl:processing-instruction>
+        <xsl:processing-instruction name="xml-model"> schematypens="http://www.w3.org/2001/XMLSchema" title="OSCAL complete schema" href="https://raw.githubusercontent.com/usnistgov/OSCAL/v1.0.4/xml/schema/oscal_complete_schema.xsd" </xsl:processing-instruction>
         <xsl:copy-of
             select="$LF" />
-        <xsl:processing-instruction name="xml-model"> schematypens="http://purl.oclc.org/dsdl/schematron" title="FedRAMP SSP constraints" https://github.com/18F/fedramp-automation/raw/master/src/validations/rules/ssp.sch" phase="#ALL"</xsl:processing-instruction>
+        <xsl:processing-instruction name="xml-model"> schematypens="http://purl.oclc.org/dsdl/schematron" title="FedRAMP SSP constraints" https://github.com/GSA/fedramp-automation/raw/master/src/validations/rules/ssp.sch" phase="#ALL"</xsl:processing-instruction>
 
         <xsl:if
             test="local-name(/*) ne 'catalog'">
@@ -170,7 +170,7 @@
 
             <import-profile>
                 <xsl:attribute
-                    name="href">{//link[@rel='resolution-source']/@href}</xsl:attribute>
+                    name="href">{resolve-uri(//link[@rel='resolution-source']/@href, base-uri())}</xsl:attribute>
             </import-profile>
 
             <xsl:call-template
@@ -922,6 +922,33 @@
             </component>
 
             <component
+                type="required-protocols"
+                uuid="772ea84a-0d4e-4225-b82f-66fdc498a934">
+                <title>Demonstrated use of required protocols</title>
+                <description>
+                    <p>Demonstrated use of required protocols</p>
+                    <p>This satisfies an assertion requiring the presence of those protocols</p>
+                </description>
+                <prop
+                    name="asset-type"
+                    value="protocols-used" />
+                <status
+                    state="active" />
+                <protocol
+                    name="DNS">
+                    <xsl:comment> ☚ Note the use of a protocol name which is NOT an IANA service name (DNS is 'domain') </xsl:comment>
+                </protocol>
+                <protocol
+                    name="NTP" />
+                <protocol
+                    name="SSH" />
+                <protocol
+                    name="HTTPS" />
+                <protocol
+                    name="TLS" />
+            </component>
+
+            <component
                 type="DNS-authoritative-service"
                 uuid="{uuid:randomUUID()}">
                 <title>Authoritative DNS service</title>
@@ -1087,7 +1114,7 @@
                     </xsl:if>
                     <xsl:comment>
                             <xsl:choose>
-                                <xsl:when test="count(param) gt 2">
+                                <xsl:when test="count(param) ge 2">
                                     <xsl:text> There are {count(param)} control parameters </xsl:text>
                                 </xsl:when>
                                 <xsl:when test="count(param) eq 1">
